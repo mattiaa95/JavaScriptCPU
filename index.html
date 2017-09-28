@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>CPU</title>
+  </head>
+  <body>
+    <h1>FIFO</h1>
+
+Instante en el que llega P1:<input type="number" id="lleP1" value="0">
+<br>
+ Cantidad  de  CPU   P1:<input type="number" id="cpP1" value="0">
+<br><br>
+Instante en el que llega P2:<input type="number" id="lleP2" value="0">
+<br>
+ Cantidad  de  CPU   P2:<input type="number" id="cpP2" value="0">
+<br><br>
+
+
+<input type="button" value="Genera una tabla" onclick="main()">
+
+
+
+<script type="text/javascript">
+
+
+// ---------------------------------------------------------------------
+function generar_array(llegaP,cpuP,cputotal) {
+  var arry = new Array();
+
+    var procesando=0;
+    var vidaproceso=0;
+
+
+ for (var i = llegaP; i < cputotal; i++) {
+
+
+      if ((llegaP<=i) && (procesando==0)) {
+
+          if (vidaproceso==cpuP) {
+            arry[i] = "F";
+          }else{
+            arry[i] = "X";
+            vidaproceso++;
+          }
+      }else if (procesando==1) {
+
+          arry[i] = "E";
+
+      }
+  }
+  return arry;
+
+}
+// ---------------------------------------------------------------------
+function TiempoDeCpu(llP1,llP2,cP1,cP2) {
+  // Tiempo cpu calculo
+if (cP1==0) {
+  llP1 = 0;
+}
+if (cP2==0) {
+  llP2 = 0;
+}
+  if ((llP1==0 && llP2==0)) {
+    var tiempocpu =(cP1+cP2);
+}else{
+    var tiempocpu =(llP1+llP2+cP1+cP2);
+  }
+  return tiempocpu;
+}
+// ---------------------------------------------------------------------
+function genera_tabla() {
+  var body = document.getElementsByTagName("body")[0];
+
+  var tabla   = document.createElement("table");
+  var tblBody = document.createElement("tbody");
+  // Crea las celdas
+  for (var i = 0; i < 2; i++) {
+    // Crea las hileras de la tabla
+    var hilera = document.createElement("tr");
+    for (var j = 0; j < 2; j++) {
+      // Crea un elemento <td> y un nodo de texto, haz que el nodo de
+      // texto sea el contenido de <td>, ubica el elemento <td> al final
+      // de la hilera de la tabla
+      var celda = document.createElement("td");
+      var textoCelda = document.createTextNode("celda en la hilera "+i+", columna "+j);
+      celda.appendChild(textoCelda);
+      hilera.appendChild(celda);
+    }
+    tblBody.appendChild(hilera);
+  }
+  tabla.appendChild(tblBody);
+  body.appendChild(tabla);
+  tabla.setAttribute("border", "2");
+}
+
+
+
+function main() {
+  var llegaP1 = parseInt(document.getElementById("lleP1").value);
+  var cpuP1 = parseInt(document.getElementById("cpP1").value);
+  var llegaP2 = parseInt(document.getElementById("lleP2").value);
+  var cpuP2 = parseInt(document.getElementById("cpP2").value);
+
+  // generar array para p1 la variable va fuera del main
+  var ar = generar_array(llegaP1,cpuP1,TiempoDeCpu(llegaP1,llegaP2,cpuP1,cpuP2));
+
+
+
+}
+
+</script>
+  </body>
+</html>
