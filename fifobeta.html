@@ -105,6 +105,7 @@
             var arry = [];
             var procesando = 0;
             var procesoselect = 0;
+            var cambiocontexto=0;
             var turno = 0;
             var espera = [0, 0, 0, 0, 0, 0];
             var max = 0;
@@ -115,17 +116,18 @@
 
 
                 // revisamos la cola y si hay algun proceso esperando le asignamos la cpu
-                if (i<0 && procesoselect == 0) {
-
+                if (cambiocontexto == 1) {
                     max = Math.max.apply(null, espera);
-                    if (max != 0) {
+                    if (max < 0) {
                         for (var i = 0; i < espera.length; i++) {
                             if (espera[i] == max) {
                                 procesoselect = (i + 1);
-                                continue;
+                                espera[i]=0;
+                                break;
                             }
                         }
                     }
+                    cambiocontexto=0;
                 }
 
                 // solo entra en el proceso selecctionado o si no hay ninguno---mas adelante servira para algortmos expropiativos
@@ -187,22 +189,22 @@
 
                 // cola de los procesos bloqueados por otro y estan a la espera
                 // si la llegada del proceso equivale al ciclo pero esta bloqueado la cpu y no por el mismo se suma 1 a la espera
-                if (l1 <= i && procesando == 1 && procesoselect != 1) {
+                if (l1 <= i && c1 != 0 && procesando == 1 && procesoselect != 1) {
                     espera[0]++;
                 }
-                if (l2 <= i && procesando == 1 && procesoselect != 2) {
+                if (l2 <= i && c2 != 0 && procesando == 1 && procesoselect != 2) {
                     espera[1]++;
                 }
-                if (l3 <= i && procesando == 1 && procesoselect != 3) {
+                if (l3 <= i && c3 != 0 && procesando == 1 && procesoselect != 3) {
                     espera[2]++;
                 }
-                if (l4 <= i && procesando == 1 && procesoselect != 4) {
+                if (l4 <= i && c4 != 0 && procesando == 1 && procesoselect != 4) {
                     espera[3]++;
                 }
-                if (l5 <= i && procesando == 1 && procesoselect != 5) {
+                if (l5 <= i && c5 != 0 && procesando == 1 && procesoselect != 5) {
                     espera[4]++;
                 }
-                if (l6 <= i && procesando == 1 && procesoselect != 6) {
+                if (l6 <= i && c6 != 0 && procesando == 1 && procesoselect != 6) {
                     espera[5]++;
                 }
 
@@ -211,33 +213,40 @@
 
                 // en el caso de que la cpu no procesa nada se escribe una V.
                 if (procesando == 0) {
-                    arry[i]="V";
+                    arry[i] = "V";
                 }
 
                 // se asigna el valor a 0 al final del tiempo de cpu
                 procesando = 0;
 
 
-                // liberar procesos o matenerlos
+                // liberar procesos o matenerlos el turnoe s para saber que proceso se ha ejecutado ene ste ciclo
 
                 if (c1 == 0 && turno == 1) {
                     // en el caso de que llegue a 0 el tiempo de cpu libera la cpu.
                     procesoselect = 0;
+                    // notifica que la cpu esta libre para ver a quien asigna
+                    cambiocontexto=1;
                 }
                 if (c2 == 0 && turno == 2) {
                     procesoselect = 0;
+                    cambiocontexto=1;
                 }
                 if (c3 == 0 && turno == 3) {
                     procesoselect = 0;
+                    cambiocontexto=1;
                 }
                 if (c4 == 0 && turno == 4) {
                     procesoselect = 0;
+                    cambiocontexto=1;
                 }
                 if (c5 == 0 && turno == 5) {
                     procesoselect = 0;
+                    cambiocontexto=1;
                 }
                 if (c6 == 0 && turno == 6) {
                     procesoselect = 0;
+                    cambiocontexto=1;
                 }
                 // se quita el truno para el siguiente ciclo
                 turno = 0;
@@ -251,27 +260,27 @@
 
         }
 
-// -----------------------------------------------------------------------
+        // -----------------------------------------------------------------------
         function limpiarV(array) {
 
-          // borrar las v finales ya que el tiempo maximo supera con creces el de ejecucion
+            // borrar las v finales ya que el tiempo maximo supera con creces el de ejecucion
 
-          if (array[(array.length - 1)]!="V") {
+            if (array[(array.length - 1)] != "V") {
 
-          }else {
-        for (var i = (array.length - 1); i > 0; i--) {
-              if (array[i]==="V") {
-                  array.splice(i,1);
-              } else {
-                  break;
-              }
-          }
+            } else {
+                for (var i = (array.length - 1); i > 0; i--) {
+                    if (array[i] === "V") {
+                        array.splice(i, 1);
+                    } else {
+                        break;
+                    }
+                }
             }
 
-          return array;
+            return array;
 
         }
-// ---------------------------------------------------------------------
+        // ---------------------------------------------------------------------
         // en este caso calculamos el tiempo maximo de cpu es mucho mayor al tiempo de ejcucion
         // es dando el caso peor.
         function TiempoDeCpu(l1, l2, l3, l4, l5, l6, c1, c2, c3, c4, c5, c6) {
@@ -279,7 +288,7 @@
             var ticpu = (l1 + l2 + l3 + l4 + l5 + l6 + c1 + c2 + c3 + c4 + c5 + c6);
             return ticpu;
         }
-//------------------------------------------------------------------------
+        //------------------------------------------------------------------------
         // main, bueno aqui ya esto es facil ya tienemos las dunciones hechas :)
         function main() {
             // ponemos a 0 la variables que va ser el esquema de garntt.
