@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>CPU</title>
+</head>
+
+<body>
+    <h1>FIFO</h1>
+
+    <h4>si dos procesos tienen el mismo orden de llegada se basa en el numero del proceso,el de menor numero tiene mayor prioridad.</h4>
+
+    <br>Instante en el que llega P1:<input type="number" id="L1" value="0">
+    <br> Cantidad de CPU P1:<input type="number" id="C1" value="0">
+    <br> Instante en el que llega P2:<input type="number" id="L2" value="0">
+    <br> Cantidad de CPU P2:<input type="number" id="C2" value="0">
+    <br> Instante en el que llega P3:<input type="number" id="L3" value="0">
+    <br> Cantidad de CPU P3:<input type="number" id="C3" value="0">
+    <br> Instante en el que llega P4:<input type="number" id="L4" value="0">
+    <br> Cantidad de CPU P4:<input type="number" id="C4" value="0">
+    <br> Instante en el que llega P5:<input type="number" id="L5" value="0">
+    <br> Cantidad de CPU P5:<input type="number" id="C5" value="0">
+    <br> Instante en el que llega P6:<input type="number" id="L6" value="0">
+    <br> Cantidad de CPU P6:<input type="number" id="C6" value="0">
+    <br>
+
+    <input type="button" value="Genera Tabla" onclick="main()">
+
+
+
+    <script type="text/javascript">
+        // ---------------------generador de tablas copiado del año pasado y adaptado :)-----------
+        function genera_tabla(array) {
+            var body = document.getElementsByTagName("body")[0];
+
+            var tabla = document.createElement("table");
+            var tblBody = document.createElement("tbody");
+
+            for (var i = 0; i < 1; i++) {
+                var hilera = document.createElement("tr");
+                for (var j = 0; j < array.length; j++) {
+                    var celda = document.createElement("td");
+
+                    switch (array[j]) {
+                        case "P1":
+                            var textoCelda = document.createTextNode(array[j]);
+                            celda.appendChild(textoCelda);
+                            celda.style.backgroundColor = "#ff83aa";
+                            hilera.appendChild(celda);
+                            break;
+                        case "P2":
+                            var textoCelda = document.createTextNode(array[j]);
+                            celda.appendChild(textoCelda);
+                            celda.style.backgroundColor = "#be8359";
+                            hilera.appendChild(celda);
+                            break;
+                        case "P3":
+                            var textoCelda = document.createTextNode(array[j]);
+                            celda.appendChild(textoCelda);
+                            celda.style.backgroundColor = "#2e8359";
+                            hilera.appendChild(celda);
+                            break;
+                        case "P4":
+                            var textoCelda = document.createTextNode(array[j]);
+                            celda.appendChild(textoCelda);
+                            celda.style.backgroundColor = "#6f556f";
+                            hilera.appendChild(celda);
+                            break;
+                        case "P5":
+                            var textoCelda = document.createTextNode(array[j]);
+                            celda.appendChild(textoCelda);
+                            celda.style.backgroundColor = "#5638e2";
+                            hilera.appendChild(celda);
+                            break;
+                        case "P6":
+                            var textoCelda = document.createTextNode(array[j]);
+                            celda.appendChild(textoCelda);
+                            celda.style.backgroundColor = "orange";
+                            hilera.appendChild(celda);
+                            break;
+                        default:
+                            var textoCelda = document.createTextNode(array[j]);
+                            celda.appendChild(textoCelda);
+                            hilera.appendChild(celda);
+
+                    }
+
+                    celda.appendChild(textoCelda);
+                    hilera.appendChild(celda);
+                }
+                tblBody.appendChild(hilera);
+            }
+            tabla.appendChild(tblBody);
+            body.appendChild(tabla);
+            tabla.setAttribute("border", "2");
+        }
+
+
+
+
+        // aqui empieza la chicha
+        // ---------------------------------------------------------------------
+        function generar_array(cpumax, l1, l2, l3, l4, l5, l6, c1, c2, c3, c4, c5, c6) {
+            var arry = [];
+            var procesando = 0;
+            var procesoselect = 0;
+            var turno = 0;
+            var espera = [0, 0, 0, 0, 0, 0];
+            var max = 0;
+
+
+            // empieza a recorer con el tiempo maximo sacado de TiempoDeCpu();
+            for (var i = 0; i < cpumax; i++) {
+
+
+                // revisamos la cola y si hay algun proceso esperando le asignamos la cpu
+                if (i<0 && procesoselect == 0) {
+
+                    max = Math.max.apply(null, espera);
+                    if (max == 0) {
+                        for (var i = 0; i < espera.length; i++) {
+                            if (espera[i] == max) {
+                                procesoselect = (i + 1);
+                                continue;
+                            }
+                        }
+                    }
+                }
+
+                // solo entra en el proceso selecctionado o si no hay ninguno---mas adelante servira para algortmos expropiativos
+                if (l1 <= i && c1 != 0 && (procesoselect == 0 || procesoselect == 1)) {
+                    // tambien se evalua la llegada l1, el tiempo de cpu c1
+                    procesoselect = 1;
+                    // captura la cpu y la asigna a su proceso
+                    arry[i] = ("P1");
+                    // escribe en el array
+                    procesando = 1;
+                    // se asigna la variables que la cpu esta procesando, esta haciendo algo
+                    c1--;
+                    // se resta uno al tiempo que el queda de cpu
+                    // saber que proceso esta ocupando cpu para liberarlo despues al terminar con el ciclo
+                    turno = 1;
+                }
+                // los demas realizan lo mismo con procesos diferentes.
+                if (l2 <= i && c2 != 0 && (procesoselect == 0 || procesoselect == 2)) {
+                    procesoselect = 2;
+                    arry[i] = ("P2");
+                    procesando = 1;
+                    c2--;
+                    turno = 2;
+                }
+
+
+                if (l3 <= i && c3 != 0 && (procesoselect == 0 || procesoselect == 3)) {
+                    procesoselect = 3;
+                    arry[i] = ("P3");
+                    procesando = 1;
+                    c3--;
+                    turno = 3;
+                }
+
+                if (l4 <= i && c4 != 0 && (procesoselect == 0 || procesoselect == 4)) {
+                    procesoselect = 4;
+                    arry[i] = ("P4");
+                    procesando = 1;
+                    c4--;
+                    turno = 4;
+                }
+
+                if (l5 <= i && c5 != 0 && (procesoselect == 0 || procesoselect == 5)) {
+                    procesoselect = 5;
+                    arry[i] = ("P5");
+                    procesando = 1;
+                    c5--;
+                    turno = 5;
+                }
+
+                if (l6 <= i && c6 != 0 && (procesoselect == 0 || procesoselect == 6)) {
+                    procesoselect = 6;
+                    arry[i] = ("P6");
+                    procesando = 1;
+                    c6--;
+                    turno = 6;
+                }
+
+
+                // cola de los procesos bloqueados por otro y estan a la espera
+                // si la llegada del proceso equivale al ciclo pero esta bloqueado la cpu y no por el mismo se suma 1 a la espera
+                if (l1 <= i && procesando == 1 && procesoselect != 1) {
+                    espera[0]++;
+                }
+                if (l2 <= i && procesando == 1 && procesoselect != 2) {
+                    espera[1]++;
+                }
+                if (l3 <= i && procesando == 1 && procesoselect != 3) {
+                    espera[2]++;
+                }
+                if (l4 <= i && procesando == 1 && procesoselect != 4) {
+                    espera[3]++;
+                }
+                if (l5 <= i && procesando == 1 && procesoselect != 5) {
+                    espera[4]++;
+                }
+                if (l6 <= i && procesando == 1 && procesoselect != 6) {
+                    espera[5]++;
+                }
+
+
+
+
+                // en el caso de que la cpu no procesa nada se escribe una V.
+                if (procesando == 0) {
+                    arry[i]="V";
+                }
+
+                // se asigna el valor a 0 al final del tiempo de cpu
+                procesando = 0;
+
+
+                // liberar procesos o matenerlos
+
+                if (c1 == 0 && turno == 1) {
+                    // en el caso de que llegue a 0 el tiempo de cpu libera la cpu.
+                    procesoselect = 0;
+                }
+                if (c2 == 0 && turno == 2) {
+                    procesoselect = 0;
+                }
+                if (c3 == 0 && turno == 3) {
+                    procesoselect = 0;
+                }
+                if (c4 == 0 && turno == 4) {
+                    procesoselect = 0;
+                }
+                if (c5 == 0 && turno == 5) {
+                    procesoselect = 0;
+                }
+                if (c6 == 0 && turno == 6) {
+                    procesoselect = 0;
+                }
+                // se quita el truno para el siguiente ciclo
+                turno = 0;
+            }
+
+
+
+            // --------------------------------------
+
+            return arry;
+
+        }
+
+// -----------------------------------------------------------------------
+        function limpiarV(array) {
+
+          // borrar las v finales ya que el tiempo maximo supera con creces el de ejecucion
+
+          if (array[(array.length - 1)]!="V") {
+
+          }else {
+        for (var i = (array.length - 1); i > 0; i--) {
+              if (array[i]==="V") {
+                  array.splice(i,1);
+              } else {
+                  break;
+              }
+          }
+            }
+
+          return array;
+
+        }
+// ---------------------------------------------------------------------
+        // en este caso calculamos el tiempo maximo de cpu es mucho mayor al tiempo de ejcucion
+        // es dando el caso peor.
+        function TiempoDeCpu(l1, l2, l3, l4, l5, l6, c1, c2, c3, c4, c5, c6) {
+            // Tiempo cpu calculo
+            var ticpu = (l1 + l2 + l3 + l4 + l5 + l6 + c1 + c2 + c3 + c4 + c5 + c6);
+            return ticpu;
+        }
+//------------------------------------------------------------------------
+        // main, bueno aqui ya esto es facil ya tienemos las dunciones hechas :)
+        function main() {
+            // ponemos a 0 la variables que va ser el esquema de garntt.
+            var garntt;
+            // capturamos los valores del formulario y los convertimos a integer. entero
+            var l1 = parseInt(document.getElementById("L1").value);
+            var c1 = parseInt(document.getElementById("C1").value);
+            var l2 = parseInt(document.getElementById("L2").value);
+            var c2 = parseInt(document.getElementById("C2").value);
+            var l3 = parseInt(document.getElementById("L3").value);
+            var c3 = parseInt(document.getElementById("C3").value);
+            var l4 = parseInt(document.getElementById("L4").value);
+            var c4 = parseInt(document.getElementById("C4").value);
+            var l5 = parseInt(document.getElementById("L5").value);
+            var c5 = parseInt(document.getElementById("C5").value);
+            var l6 = parseInt(document.getElementById("L6").value);
+            var c6 = parseInt(document.getElementById("C6").value);
+            // calculamos el tiempo maximo que puede esta ejecutando la cpu en el peor caso
+            var longitudarraymax = TiempoDeCpu(l1, l2, l3, l4, l5, l6, c1, c2, c3, c4, c5, c6);
+
+            // generamos el esquema de garntt en un array y lo metemos en la variable
+            garntt = generar_array(longitudarraymax, l1, l2, l3, l4, l5, l6, c1, c2, c3, c4, c5, c6);
+            // limpiamos las v de sobra
+            limpiarV(garntt);
+            // le pasamos el array de garntt a la funcion generar_tabla. y ya esta
+            genera_tabla(garntt);
+            // hay errores,no esta optimizado ni revisado bine bien , poco a poco.
+
+        }
+        // proximamente sjf,round robin, y una vida para mi XD.
+
+        // By Mattiaa95 with love
+    </script>
+</body>
+
+</html>
